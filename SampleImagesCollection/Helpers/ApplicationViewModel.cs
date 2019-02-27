@@ -46,23 +46,7 @@ namespace SampleMVVMWPF.Helpers
             };
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                var image = new Bitmap(openFileDialog.FileName);
-                var pixels = new byte[256 * 256 * 4];
-                var bitmapSource = BitmapSource.Create(25, 25, 96, 96, PixelFormats.Pbgra32, null, pixels, 256 * 4);
-                var visual = new DrawingVisual();
-                using (var drawingContext = visual.RenderOpen())
-                {
-                    var imageSource = new BitmapImage(new Uri(openFileDialog.FileName, UriKind.Relative));
-                    drawingContext.DrawImage(imageSource, new Rect(0, 0, 300, 300));
-                    var text = new FormattedText($"{ImageEditItems.Count + 1}",
-                               CultureInfo.InvariantCulture,
-                               System.Windows.FlowDirection.LeftToRight,
-                               new Typeface("Segoe UI"),
-                               32,
-                               System.Windows.Media.Brushes.Red);
-                    drawingContext.DrawText(text, new System.Windows.Point(300 - 25, 0));
-                }
-                imageEdit = new ImageEdit { BitImage = new DrawingImage(visual.Drawing) };
+                imageEdit = new ImageEdit { BitImage = new DrawingImage(CreateImage(openFileDialog.FileName)) };
             }
 
             if (imageEdit != null)
@@ -118,22 +102,27 @@ namespace SampleMVVMWPF.Helpers
 
         #region Heplpers
 
-        private BitmapImage BitmapToImageSource(Bitmap bitmap)
+        public DrawingGroup CreateImage(string imagePath)
         {
-            using (MemoryStream memory = new MemoryStream())
+            var image = new Bitmap(imagePath);
+            var pixels = new byte[256 * 256 * 4];
+            var bitmapSource = BitmapSource.Create(25, 25, 96, 96, PixelFormats.Pbgra32, null, pixels, 256 * 4);
+            var visual = new DrawingVisual();
+            using (var drawingContext = visual.RenderOpen())
             {
-                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
-                memory.Position = 0;
-                BitmapImage bitmapimage = new BitmapImage();
-                bitmapimage.BeginInit();
-                bitmapimage.StreamSource = memory;
-                bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapimage.EndInit();
-
-                return bitmapimage;
+                var imageSource = new BitmapImage(new Uri(imagePath, UriKind.Relative));
+                drawingContext.DrawImage(imageSource, new Rect(5, 5, 300, 300));
+                var text = new FormattedText($"{ImageEditItems.Count + 1}",
+                           CultureInfo.InvariantCulture,
+                           System.Windows.FlowDirection.LeftToRight,
+                           new Typeface("Segoe UI"),
+                           32,
+                           System.Windows.Media.Brushes.Red);
+                drawingContext.DrawText(text, new System.Windows.Point(300 - 25, 0));
             }
+            return visual.Drawing;
         }
-        #endregion
 
+        #endregion
     }
 }
