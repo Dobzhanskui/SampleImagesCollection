@@ -73,7 +73,7 @@ namespace SampleMVVMWPF.Helpers
             {
                 if (obj is ImageEdit imageEdit)
                 {
-                    ImageEditItems.Insert(ImageEditItems.Count - 1, imageEdit);
+                    ImageEditItems.Insert(ImageEditItems.Count == 0 ? 0 : ImageEditItems.Count - 1, imageEdit);
                 }
             }));
         }
