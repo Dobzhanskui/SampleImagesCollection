@@ -27,7 +27,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="0.15*" />
         </Grid.RowDefinitions>
-        <RichTextBox Grid.Column="0">
+        <RichTextBox Grid.Column="0" ScrollViewer.VerticalScrollBarVisibility="Auto" local:KeyboardBehaviour.KeyboardFocusCommand="{Binding KeyboardFocusCommand}">
             <FlowDocument>
                 <Paragraph>
                     <ItemsControl ItemsSource="{Binding ImageEditItems, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
@@ -55,6 +55,15 @@
                             <Image>
                                 <Image.Source>
                                     <BitmapImage UriSource="Helpers/Images/paste.ico"/>
+                                </Image.Source>
+                            </Image>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedImage}" Header="Delete">
+                        <MenuItem.Icon>
+                            <Image>
+                                <Image.Source>
+                                    <BitmapImage UriSource="Helpers/Images/delete.ico"/>
                                 </Image.Source>
                             </Image>
                         </MenuItem.Icon>
