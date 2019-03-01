@@ -42,18 +42,14 @@ namespace SampleMVVMWPF
             if (sender is FrameworkElement element)
             {
                 Keyboard.Focus(element);
-                var positionRect = default(Rect);
+                var textPointer = default(TextPointer);
 
                 if (sender is RichTextBox richTextBox)
                 {
-                    var textPointer = richTextBox.Selection.End;
-                    if (textPointer != null)
-                    {
-                        positionRect = textPointer.GetCharacterRect(LogicalDirection.Forward);
-                    }
+                    textPointer = richTextBox.CaretPosition.GetInsertionPosition(LogicalDirection.Forward);
                 }
                 var command = GetKeyboardFocusCommand(element);
-                command.Execute(positionRect);
+                command.Execute(textPointer);
             }
         }
 

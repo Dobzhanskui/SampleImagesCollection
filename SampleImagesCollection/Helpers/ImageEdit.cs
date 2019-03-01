@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel;
-using System.Drawing;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace SampleMVVMWPF.Helpers
 {
@@ -10,21 +9,21 @@ namespace SampleMVVMWPF.Helpers
     {
         #region Members
 
-        private DrawingImage m_bitImage;
+        private Image m_image;
 
         #endregion // Members
 
         #region Properties
 
-        public DrawingImage BitImage
+        public Image Image
         {
-            get => m_bitImage;
+            get => m_image;
             set
             {
-                if (m_bitImage != value)
+                if (m_image != value)
                 {
-                    m_bitImage = value;
-                    OnPropertyChanged("Title");
+                    m_image = value;
+                    OnPropertyChanged("Image");
                 }
             }
         }

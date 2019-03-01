@@ -70,7 +70,8 @@
     <Compile Include="Helpers\Command\RelayCommand.cs" />
     <Compile Include="Helpers\ImageEdit.cs" />
     <Compile Include="Helpers\ImageEditViewModel.cs" />
-    <Compile Include="Helpers\MouseEvents\MouseBehaviour.cs" />
+    <Compile Include="Helpers\MouseEvents\KeyboardBehaviour.cs" />
+    <Compile Include="Helpers\ResizingAdorner.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -113,5 +114,6 @@
   <ItemGroup>
     <Resource Include="Helpers\Images\delete.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SampleMVVMWPF"
-        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         Title="Sample Images List" Height="350" Width="525" Icon="Helpers/Images/planning.ico" Background="#FFF6F5F5">
     <Window.Resources>
@@ -27,10 +26,34 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="0.15*" />
         </Grid.RowDefinitions>
-        <RichTextBox Grid.Column="0" ScrollViewer.VerticalScrollBarVisibility="Auto" local:KeyboardBehaviour.KeyboardFocusCommand="{Binding KeyboardFocusCommand}">
+        <RichTextBox 
+            AcceptsTab="True" 
+            VerticalScrollBarVisibility="Auto"   
+            SpellCheck.IsEnabled="True"  
+            BorderBrush="Black" 
+            BorderThickness="0.7,0.7,0.7,0.7" 
+            Height="532" 
+            VerticalAlignment="Top"
+            local:KeyboardBehaviour.KeyboardFocusCommand="{Binding KeyboardFocusCommand}" 
+            />
+        <!--SelectionChanged="Workspace_SelectionChanged"-->
+        <!--<RichTextBox
+            Grid.Column="0" 
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            local:KeyboardBehaviour.KeyboardFocusCommand="{Binding KeyboardFocusCommand}" >
             <FlowDocument>
                 <Paragraph>
-                    <ItemsControl ItemsSource="{Binding ImageEditItems, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                    <ItemsControl ItemsSource="{Binding ImageEditItems, UpdateSourceTrigger=PropertyChanged}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding BitImage, UpdateSourceTrigger=PropertyChanged}" Stretch="None"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Paragraph>
+                <Paragraph>
+                    <ItemsControl ItemsSource="{Binding ImageEditItems, UpdateSourceTrigger=PropertyChanged}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Image Source="{Binding BitImage, UpdateSourceTrigger=PropertyChanged}" Stretch="None"/>
@@ -70,7 +93,7 @@
                     </MenuItem>
                 </ContextMenu>
             </RichTextBox.ContextMenu>
-        </RichTextBox>
+        </RichTextBox>-->
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <Button Command="{Binding AddCommand}" BorderBrush="#FFF9F8F8">
                 <Button.Background>

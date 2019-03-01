@@ -4,14 +4,14 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
-using System.Drawing;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
 using System.Globalization;
 using System;
 using SampleMVVMWPF.Helpers;
-using System.Text;
+using System.Windows.Documents;
+using System.Windows.Controls;
 
 namespace SampleMVVMWPF
 {
@@ -20,7 +20,7 @@ namespace SampleMVVMWPF
         #region Members
 
         private ImageEdit m_selectedImage;
-        private Rect m_rect;
+        private TextPointer m_textPointer;
 
         #region Commands
 
@@ -56,7 +56,26 @@ namespace SampleMVVMWPF
             };
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                imageEdit = new ImageEdit { BitImage = new DrawingImage(CreateNewImage(openFileDialog.FileName)) };
+                var drawingGroup = CreateNewImageWithIndex(openFileDialog.FileName);
+                var drawingImage = new Image
+                {
+                    Source = new DrawingImage(drawingGroup)
+                };
+
+                new InlineUIContainer(drawingImage, m_textPointer);
+
+                drawingImage.Loaded += delegate
+                {
+                    AdornerLayer al = AdornerLayer.GetAdornerLayer(drawingImage);
+                    if (al != null)
+                    {
+                        al.Add(new ResizingAdorner(drawingImage));
+                    }
+                };
+                imageEdit = new ImageEdit
+                {
+                    Image = drawingImage
+                };
             }
 
             if (imageEdit != null)
@@ -113,11 +132,11 @@ namespace SampleMVVMWPF
         {
             get => m_keyboardFocusCommand ?? (m_keyboardFocusCommand = new RelayCommand(obj =>
             {
-                if (obj is Rect rect)
+                if (obj is TextPointer textPointer)
                 {
-                    if (m_rect != rect)
+                    if (m_textPointer != textPointer)
                     {
-                        m_rect = rect;
+                        m_textPointer = textPointer;
                     }
                 }
             }));
@@ -137,22 +156,22 @@ namespace SampleMVVMWPF
 
         #region Heplpers
 
-        public DrawingGroup CreateNewImage(string imagePath)
+        public DrawingGroup CreateNewImageWithIndex(string imagePath)
         {
-            var image = new Bitmap(imagePath);
+            var image = new System.Drawing.Bitmap(imagePath);
             var visual = new DrawingVisual();
             using (var drawingContext = visual.RenderOpen())
             {
                 var imageSource = new BitmapImage(new Uri(imagePath, UriKind.Relative));
-                drawingContext.DrawImage(imageSource, new Rect(5, 5, image.Width > 300 ? 300 : image.Width, image.Height > 300 ? 300 : image.Height));
+                drawingContext.DrawImage(imageSource, new Rect(0, 0, 25, 25));
                 var formattedText = new FormattedText($"{ImageEditItems.Count + 1}",
                            CultureInfo.InvariantCulture,
                            System.Windows.FlowDirection.LeftToRight,
                            new Typeface("Segoe UI"),
-                           32,
-                           System.Windows.Media.Brushes.Red, 
+                           15,
+                           Brushes.Red, 
                            VisualTreeHelper.GetDpi(visual).PixelsPerDip);
-                drawingContext.DrawText(formattedText, new System.Windows.Point(image.Width > 275 ? 275 : 25, 0));
+                drawingContext.DrawText(formattedText, new Point(5, 5));
             }
             return visual.Drawing;
         }
