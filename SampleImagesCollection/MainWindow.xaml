@@ -32,6 +32,7 @@
             VerticalScrollBarVisibility="Auto"   
             SpellCheck.IsEnabled="True"  
             local:KeyboardBehaviour.KeyboardFocusCommand="{Binding KeyboardFocusCommand}" 
+            local:KeyboardBehaviour.KeyDownCommand="{Binding DeleteCommand}" 
             >
             <RichTextBox.ContextMenu>
                 <ContextMenu>

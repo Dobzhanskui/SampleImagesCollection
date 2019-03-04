@@ -29,6 +29,7 @@ namespace SampleMVVMWPF
         private RelayCommand m_pasteCommand;
         private RelayCommand m_deleteCommand;
         private RelayCommand m_keyboardFocusCommand;
+        private RelayCommand m_keyDownCommand;
 
         #endregion // Commands
 
