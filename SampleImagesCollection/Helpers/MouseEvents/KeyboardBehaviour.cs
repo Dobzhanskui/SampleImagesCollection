@@ -7,6 +7,12 @@ namespace SampleMVVMWPF
 {
     public class KeyboardBehaviour
     {
+        #region Members
+
+        private static TextPointer m_textPointer;
+
+        #endregion // Members
+
         #region DependencyProperty
 
         public static readonly DependencyProperty KeyboardFocusCommandProperty =
@@ -22,6 +28,7 @@ namespace SampleMVVMWPF
             if (dependencyObject is FrameworkElement element)
             {
                 element.GotKeyboardFocus += element_KeyboardFocus;
+                Keyboard.Focus(element);
             }
         }
 
@@ -39,17 +46,15 @@ namespace SampleMVVMWPF
 
         public static void element_KeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            if (sender is FrameworkElement element)
+            if (sender is FrameworkElement element && element is RichTextBox richTextBox)
             {
-                Keyboard.Focus(element);
-                var textPointer = default(TextPointer);
-
-                if (sender is RichTextBox richTextBox)
+                var textPointer = richTextBox.CaretPosition.GetInsertionPosition(LogicalDirection.Forward);
+                if (m_textPointer != textPointer)
                 {
-                    textPointer = richTextBox.CaretPosition.GetInsertionPosition(LogicalDirection.Forward);
+                    m_textPointer = textPointer;
+                    var command = GetKeyboardFocusCommand(element);
+                    command.Execute(m_textPointer);
                 }
-                var command = GetKeyboardFocusCommand(element);
-                command.Execute(textPointer);
             }
         }
 

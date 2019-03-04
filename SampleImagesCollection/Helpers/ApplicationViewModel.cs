@@ -59,19 +59,21 @@ namespace SampleMVVMWPF
                 var drawingGroup = CreateNewImageWithIndex(openFileDialog.FileName);
                 var drawingImage = new Image
                 {
+                    Height = drawingGroup.Bounds.Height,
+                    Width = drawingGroup.Bounds.Width,
                     Source = new DrawingImage(drawingGroup)
                 };
 
                 new InlineUIContainer(drawingImage, m_textPointer);
 
-                drawingImage.Loaded += delegate
-                {
-                    AdornerLayer al = AdornerLayer.GetAdornerLayer(drawingImage);
-                    if (al != null)
-                    {
-                        al.Add(new ResizingAdorner(drawingImage));
-                    }
-                };
+                //drawingImage.Loaded += delegate
+                //{
+                //    AdornerLayer al = AdornerLayer.GetAdornerLayer(drawingImage);
+                //    if (al != null)
+                //    {
+                //        al.Add(new ResizingAdorner(drawingImage));
+                //    }
+                //};
                 imageEdit = new ImageEdit
                 {
                     Image = drawingImage
@@ -163,15 +165,15 @@ namespace SampleMVVMWPF
             using (var drawingContext = visual.RenderOpen())
             {
                 var imageSource = new BitmapImage(new Uri(imagePath, UriKind.Relative));
-                drawingContext.DrawImage(imageSource, new Rect(0, 0, 25, 25));
+                drawingContext.DrawImage(imageSource, new Rect(0, 0, image.Width > 200 ? 200 : image.Width, image.Height > 200 ? 200 : image.Height));
                 var formattedText = new FormattedText($"{ImageEditItems.Count + 1}",
                            CultureInfo.InvariantCulture,
                            System.Windows.FlowDirection.LeftToRight,
                            new Typeface("Segoe UI"),
-                           15,
+                           image.Width < 25 ? image.Width / 1.5 : 25,
                            Brushes.Red, 
                            VisualTreeHelper.GetDpi(visual).PixelsPerDip);
-                drawingContext.DrawText(formattedText, new Point(5, 5));
+                drawingContext.DrawText(formattedText, new Point(image.Width > 200 ? 170 : image.Width < 25 ? (image.Width / 1.2) + 5 : image.Width - 25, 0));
             }
             return visual.Drawing;
         }

@@ -27,41 +27,12 @@
             <RowDefinition Height="0.15*" />
         </Grid.RowDefinitions>
         <RichTextBox 
+            Grid.Row="0"
             AcceptsTab="True" 
             VerticalScrollBarVisibility="Auto"   
             SpellCheck.IsEnabled="True"  
-            BorderBrush="Black" 
-            BorderThickness="0.7,0.7,0.7,0.7" 
-            Height="532" 
-            VerticalAlignment="Top"
             local:KeyboardBehaviour.KeyboardFocusCommand="{Binding KeyboardFocusCommand}" 
-            />
-        <!--SelectionChanged="Workspace_SelectionChanged"-->
-        <!--<RichTextBox
-            Grid.Column="0" 
-            ScrollViewer.VerticalScrollBarVisibility="Auto"
-            ScrollViewer.HorizontalScrollBarVisibility="Auto"
-            local:KeyboardBehaviour.KeyboardFocusCommand="{Binding KeyboardFocusCommand}" >
-            <FlowDocument>
-                <Paragraph>
-                    <ItemsControl ItemsSource="{Binding ImageEditItems, UpdateSourceTrigger=PropertyChanged}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Image Source="{Binding BitImage, UpdateSourceTrigger=PropertyChanged}" Stretch="None"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Paragraph>
-                <Paragraph>
-                    <ItemsControl ItemsSource="{Binding ImageEditItems, UpdateSourceTrigger=PropertyChanged}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Image Source="{Binding BitImage, UpdateSourceTrigger=PropertyChanged}" Stretch="None"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Paragraph>
-            </FlowDocument>
+            >
             <RichTextBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="{Binding CutCommand}" CommandParameter="{Binding SelectedImage}" Header="Cut">
@@ -93,7 +64,7 @@
                     </MenuItem>
                 </ContextMenu>
             </RichTextBox.ContextMenu>
-        </RichTextBox>-->
+        </RichTextBox>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <Button Command="{Binding AddCommand}" BorderBrush="#FFF9F8F8">
                 <Button.Background>

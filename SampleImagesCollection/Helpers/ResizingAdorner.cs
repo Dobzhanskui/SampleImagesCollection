@@ -25,14 +25,21 @@ namespace SampleMVVMWPF.Helpers
             // Call a helper method to initialize the Thumbs
             // with a customized cursors.
 
-            BuildAdornerCorner(ref topRight, Cursors.SizeNESW);
+            BuildAdornerCorner(ref topRight, Cursors.SizeNESW);//RNTP
+            BuildAdornerCorner(ref topLeft, Cursors.SizeNESW);//RNTP
+            BuildAdornerCorner(ref bottomLeft, Cursors.SizeNESW);//RNTP
+            BuildAdornerCorner(ref bottomRight, Cursors.SizeNESW);//RNTP
 
             BuildAdornerCorner(ref MiddleLeft, Cursors.SizeWE);//RNTP
             BuildAdornerCorner(ref MiddleRight, Cursors.SizeWE);//RNTP
             BuildAdornerCorner(ref MiddleTop, Cursors.SizeNS);//RNTP
             BuildAdornerCorner(ref MiddleBottom, Cursors.SizeNS);//RNTP
 
-            topRight.DragDelta += new DragDeltaEventHandler(HandleTopRight);
+            topRight.DragDelta += new DragDeltaEventHandler(HandleTopRight);//RNTP
+            topLeft.DragDelta += new DragDeltaEventHandler(HandleTopLeft);//RNTP
+            bottomLeft.DragDelta += new DragDeltaEventHandler(HandleBottomLeft);//RNTP
+            bottomRight.DragDelta += new DragDeltaEventHandler(HandleBottomRight);//RNTP
+
             MiddleLeft.DragDelta += new DragDeltaEventHandler(HandleMiddleLeft);//RNTP
             MiddleRight.DragDelta += new DragDeltaEventHandler(HandleMiddleRight);//RNTP
             MiddleTop.DragDelta += new DragDeltaEventHandler(HandleMiddleTop);//RNTP
@@ -43,7 +50,7 @@ namespace SampleMVVMWPF.Helpers
         private void HandleMiddleLeft(object sender, DragDeltaEventArgs args)
         {
             var adornedElement = this.AdornedElement as FrameworkElement;
-            Thumb hitThumb = sender as Thumb;
+            var hitThumb = sender as Thumb;
 
             if (adornedElement == null || hitThumb == null) return;
             FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
@@ -58,8 +65,8 @@ namespace SampleMVVMWPF.Helpers
 
         private void HandleMiddleRight(object sender, DragDeltaEventArgs args)
         {
-            FrameworkElement adornedElement = this.AdornedElement as FrameworkElement;
-            Thumb hitThumb = sender as Thumb;
+            var adornedElement = this.AdornedElement as FrameworkElement;
+            var hitThumb = sender as Thumb;
 
             if (adornedElement == null || hitThumb == null) return;
             FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
@@ -182,11 +189,16 @@ namespace SampleMVVMWPF.Helpers
             // These will be used to place the ResizingAdorner at the corners of the adorned element.  
             double desiredWidth = AdornedElement.DesiredSize.Width;
             double desiredHeight = AdornedElement.DesiredSize.Height;
+
             // adornerWidth & adornerHeight are used for placement as well.
             double adornerWidth = this.DesiredSize.Width;
             double adornerHeight = this.DesiredSize.Height;
 
             topRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, -adornerHeight / 2, adornerWidth, adornerHeight));
+            topLeft.Arrange(new Rect(-adornerWidth / 2, -adornerHeight / 2, adornerWidth, adornerHeight));
+
+            bottomLeft.Arrange(new Rect(-adornerWidth / 2, desiredHeight - adornerHeight / 2, adornerWidth, adornerHeight));
+            bottomRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, desiredHeight - adornerHeight / 2, adornerWidth, adornerHeight));
 
             MiddleLeft.Arrange(new Rect(-adornerWidth / 2, ((-adornerHeight / 2) + (desiredHeight - adornerHeight / 2)) / 2, adornerWidth, adornerHeight));//RNTP
             MiddleRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, ((-adornerHeight / 2) + (desiredHeight - adornerHeight / 2)) / 2, adornerWidth, adornerHeight));//RNTP
@@ -199,7 +211,7 @@ namespace SampleMVVMWPF.Helpers
 
         // Helper method to instantiate the corner Thumbs, set the Cursor property, 
         // set some appearance properties, and add the elements to the visual tree.
-        void BuildAdornerCorner(ref Thumb cornerThumb, System.Windows.Input.Cursor customizedCursor)
+        void BuildAdornerCorner(ref Thumb cornerThumb, Cursor customizedCursor)
         {
             if (cornerThumb != null)
                 return;
