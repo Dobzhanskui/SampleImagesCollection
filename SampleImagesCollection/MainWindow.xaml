@@ -29,10 +29,11 @@
         <RichTextBox 
             Grid.Row="0"
             AcceptsTab="True" 
-            VerticalScrollBarVisibility="Auto"   
+            VerticalScrollBarVisibility="Auto"  
+            HorizontalScrollBarVisibility="Auto"
             SpellCheck.IsEnabled="True"  
             local:KeyboardBehaviour.KeyboardFocusCommand="{Binding KeyboardFocusCommand}" 
-            local:KeyboardBehaviour.KeyDownCommand="{Binding DeleteCommand}" 
+            local:KeyboardBehaviour.KeyDownCommand="{Binding DeleteCommand}"
             >
             <RichTextBox.ContextMenu>
                 <ContextMenu>

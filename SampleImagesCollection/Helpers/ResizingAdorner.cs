@@ -194,18 +194,18 @@ namespace SampleMVVMWPF.Helpers
             double adornerWidth = this.DesiredSize.Width;
             double adornerHeight = this.DesiredSize.Height;
 
-            topRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, -adornerHeight / 2, adornerWidth, adornerHeight));
-            topLeft.Arrange(new Rect(-adornerWidth / 2, -adornerHeight / 2, adornerWidth, adornerHeight));
+            topRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, -adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
+            topLeft.Arrange(new Rect(-adornerWidth / 2, -adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
 
-            bottomLeft.Arrange(new Rect(-adornerWidth / 2, desiredHeight - adornerHeight / 2, adornerWidth, adornerHeight));
-            bottomRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, desiredHeight - adornerHeight / 2, adornerWidth, adornerHeight));
+            bottomLeft.Arrange(new Rect(-adornerWidth / 2, desiredHeight - adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
+            bottomRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, desiredHeight - adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
 
             MiddleLeft.Arrange(new Rect(-adornerWidth / 2, ((-adornerHeight / 2) + (desiredHeight - adornerHeight / 2)) / 2, adornerWidth, adornerHeight));//RNTP
             MiddleRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, ((-adornerHeight / 2) + (desiredHeight - adornerHeight / 2)) / 2, adornerWidth, adornerHeight));//RNTP
 
             MiddleTop.Arrange(new Rect(((-adornerWidth / 2) + (desiredWidth - adornerWidth / 2)) / 2, -adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
             MiddleBottom.Arrange(new Rect(((-adornerWidth / 2) + (desiredWidth - adornerWidth / 2)) / 2, desiredHeight - adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
-                                                                                                                                                                          // Return the final size.
+            // Return the final size.
             return finalSize;
         }
 

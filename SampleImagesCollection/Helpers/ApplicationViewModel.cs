@@ -19,7 +19,7 @@ namespace SampleMVVMWPF
     {
         #region Members
 
-        private ImageEdit m_selectedImage;
+        private InlineUIContainer m_selectedImage;
         private TextPointer m_textPointer;
 
         #region Commands
@@ -29,7 +29,6 @@ namespace SampleMVVMWPF
         private RelayCommand m_pasteCommand;
         private RelayCommand m_deleteCommand;
         private RelayCommand m_keyboardFocusCommand;
-        private RelayCommand m_keyDownCommand;
 
         #endregion // Commands
 
@@ -39,18 +38,18 @@ namespace SampleMVVMWPF
 
         public ApplicationViewModel()
         {
-            ImageEditItems = new ObservableCollection<ImageEdit>();
+            ImageEditItems = new ObservableCollection<InlineUIContainer>();
         }
 
         #endregion // Constructor
 
         #region Properties
 
-        public ObservableCollection<ImageEdit> ImageEditItems { get; set; }
+        public ObservableCollection<InlineUIContainer> ImageEditItems { get; set; }
 
         public RelayCommand AddCommand => m_addOpenCommand ?? (m_addOpenCommand = new RelayCommand(obj =>
         {
-            var imageEdit = default(ImageEdit);
+            var inlineUIContainer = default(InlineUIContainer);
             var openFileDialog = new OpenFileDialog
             {
                 Filter = "Image files|*.bmp;*.jpg;*.gif;*.png;*.tif|Bitmaps|*.bmp|PNG files|*.png|JPEG files|*.jpg|GIF files|*.gif|TIFF files|*.tif|All files|*.*"
@@ -65,26 +64,23 @@ namespace SampleMVVMWPF
                     Source = new DrawingImage(drawingGroup)
                 };
 
-                new InlineUIContainer(drawingImage, m_textPointer);
+                inlineUIContainer = new InlineUIContainer(drawingImage, m_textPointer);
+                //m_textPointer.Paragraph.Inlines.Add(inlineUIContainer);
 
-                //drawingImage.Loaded += delegate
-                //{
-                //    AdornerLayer al = AdornerLayer.GetAdornerLayer(drawingImage);
-                //    if (al != null)
-                //    {
-                //        al.Add(new ResizingAdorner(drawingImage));
-                //    }
-                //};
-                imageEdit = new ImageEdit
+                drawingImage.Loaded += delegate
                 {
-                    Image = drawingImage
+                    AdornerLayer al = AdornerLayer.GetAdornerLayer(drawingImage);
+                    if (al != null)
+                    {
+                        al.Add(new ResizingAdorner(drawingImage));
+                    }
                 };
             }
 
-            if (imageEdit != null)
+            if (inlineUIContainer != null)
             {
-                ImageEditItems.Add(imageEdit);
-                SelectedImage = imageEdit;
+                ImageEditItems.Add(inlineUIContainer);
+                SelectedImage = inlineUIContainer;
             }
         }));
 
@@ -92,36 +88,58 @@ namespace SampleMVVMWPF
         {
             get => m_cutCommand ?? (m_cutCommand = new RelayCommand(obj =>
             {
-                if (obj is ImageEdit imageEdit)
+                if (obj is InlineUIContainer inlineUIContainer)
                 {
-                    ImageEditItems.Remove(imageEdit);
+                    ImageEditItems.Remove(inlineUIContainer);
+                    m_textPointer.Paragraph.Inlines.Remove(inlineUIContainer);
                 }
-            }));
+            },
+                (obj) => obj != null && ImageEditItems.Count > 0));
         }
 
         public RelayCommand PasteCommand
         {
             get => m_pasteCommand ?? (m_pasteCommand = new RelayCommand(obj =>
             {
-                if (obj is ImageEdit imageEdit)
+                if (obj is InlineUIContainer inlineUIContainer)
                 {
-                    ImageEditItems.Insert(ImageEditItems.Count == 0 ? 0 : ImageEditItems.Count - 1, imageEdit);
+                    if (m_textPointer.Paragraph.Inlines.Contains(inlineUIContainer))
+                        return;
+
+                    if (ImageEditItems.Count == 0)
+                    {
+                        m_textPointer.Paragraph.Inlines.Add(inlineUIContainer);                        
+                    }
+                    else
+                    {
+                        m_textPointer.Paragraph.Inlines.InsertAfter(m_textPointer.Paragraph.Inlines.LastInline, inlineUIContainer);
+                    }
+                    
+                    ImageEditItems.Insert(ImageEditItems.Count == 0 ? 0 : ImageEditItems.Count - 1, inlineUIContainer);
+                    SelectedImage = inlineUIContainer;
                 }
-            }));
+            },
+                (obj) => obj != null));
         }
 
         public RelayCommand DeleteCommand
         {
             get => m_deleteCommand ?? (m_deleteCommand = new RelayCommand(obj =>
             {
-                if (obj is ImageEdit imageEdit)
+                if (obj is InlineUIContainer inlineUIContainer)
                 {
-                    ImageEditItems.Remove(imageEdit);
+                    ImageEditItems.Remove(inlineUIContainer);
+
+                    if (m_textPointer.Paragraph != null)
+                        m_textPointer.Paragraph.Inlines.Remove(inlineUIContainer);
+
+                    SelectedImage = ImageEditItems.Count == 0 ? null : ImageEditItems[ImageEditItems.Count - 1];
                 }
-            }));
+            },
+             (obj) => obj != null && ImageEditItems.Count > 0));
         }
 
-        public ImageEdit SelectedImage
+        public InlineUIContainer SelectedImage
         {
             get => m_selectedImage;
             set
@@ -137,10 +155,7 @@ namespace SampleMVVMWPF
             {
                 if (obj is TextPointer textPointer)
                 {
-                    if (m_textPointer != textPointer)
-                    {
-                        m_textPointer = textPointer;
-                    }
+                    m_textPointer = textPointer;
                 }
             }));
         }
@@ -166,6 +181,7 @@ namespace SampleMVVMWPF
             using (var drawingContext = visual.RenderOpen())
             {
                 var imageSource = new BitmapImage(new Uri(imagePath, UriKind.Relative));
+                //var positiontRect = m_textPointer.GetCharacterRect(LogicalDirection.Forward);
                 drawingContext.DrawImage(imageSource, new Rect(0, 0, image.Width > 200 ? 200 : image.Width, image.Height > 200 ? 200 : image.Height));
                 var formattedText = new FormattedText($"{ImageEditItems.Count + 1}",
                            CultureInfo.InvariantCulture,
