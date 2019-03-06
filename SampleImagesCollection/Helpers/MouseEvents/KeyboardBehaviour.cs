@@ -13,9 +13,9 @@ namespace SampleMVVMWPF
            DependencyProperty.RegisterAttached("KeyboardFocusCommand", typeof(ICommand), typeof(KeyboardBehaviour),
            new FrameworkPropertyMetadata(new PropertyChangedCallback(KeyboardFocusCommandChanged)));
 
-        public static readonly DependencyProperty KeyDownCommandProperty =
-           DependencyProperty.RegisterAttached("KeyDownCommand", typeof(ICommand), typeof(KeyboardBehaviour),
-           new FrameworkPropertyMetadata(new PropertyChangedCallback(KeyDownCommandChanged)));
+        public static readonly DependencyProperty SelectedImageCommandProperty =
+           DependencyProperty.RegisterAttached("SelectedImageCommand", typeof(ICommand), typeof(KeyboardBehaviour),
+           new FrameworkPropertyMetadata(new PropertyChangedCallback(SelectedImageCommandChanged)));
 
         #endregion // DependencyProperty
 
@@ -30,11 +30,12 @@ namespace SampleMVVMWPF
             }
         }
 
-        public static void KeyDownCommandChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        public static void SelectedImageCommandChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
-            if (dependencyObject is FrameworkElement element)
+            if (dependencyObject is FrameworkElement element && element is RichTextBox richTextBox)
             {
-                element.PreviewKeyDown += element_KeyDown;
+                element.PreviewMouseUp += element_PreviewMouseUp;
+                richTextBox.IsDocumentEnabled = true;
             }
         }
 
@@ -43,43 +44,55 @@ namespace SampleMVVMWPF
             uiElement.SetValue(KeyboardFocusCommandProperty, value);
         }
 
-        public static void SetKeyDownCommand(UIElement uiElement, ICommand value)
+        public static void SetSelectedImageCommand(UIElement uiElement, ICommand value)
         {
-            uiElement.SetValue(KeyDownCommandProperty, value);
+            uiElement.SetValue(SelectedImageCommandProperty, value);
         }
 
         public static ICommand GetKeyboardFocusCommand(UIElement element)
             => (ICommand)element.GetValue(KeyboardFocusCommandProperty);
 
-        public static ICommand GetKeyDownCommand(UIElement element)
-          => (ICommand)element.GetValue(KeyDownCommandProperty);
+        public static ICommand GetSelectedImageCommand(UIElement element)
+         => (ICommand)element.GetValue(SelectedImageCommandProperty);
 
         #endregion // Commands
 
-        #region Event
+        #region Events
 
         public static void element_KeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            if (sender is FrameworkElement element && element is RichTextBox richTextBox)
+            if (sender is RichTextBox richTextBox)
             {
-                var textPointer = richTextBox.CaretPosition.GetInsertionPosition(LogicalDirection.Forward);
-                var command = GetKeyboardFocusCommand(element);
+                var textPointer = richTextBox.CaretPosition;
+                var command = GetKeyboardFocusCommand(richTextBox);
                 command.Execute(textPointer);
             }
         }
 
-        public static void element_KeyDown(object sender, KeyEventArgs e)
+        private static void element_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (e.Key == Key.Delete) //Also "Key.Delete" is available.
+            if (sender is FrameworkElement element && element is RichTextBox richTextBox)
             {
-                if (e.Source is FrameworkElement element && element.DataContext is ApplicationViewModel app)
+                foreach (Block block in richTextBox.Document.Blocks)
                 {
-                    var command = GetKeyDownCommand(element);
-                    command.Execute(app.SelectedImage);
+                    if (block is Paragraph paragraph)
+                    {
+                        foreach (Inline inline in paragraph.Inlines)
+                        {
+                            if (inline is InlineUIContainer inlineUIContainer)
+                            {
+                                if (richTextBox.Selection.Contains(inlineUIContainer.ContentStart))
+                                {
+                                    var command = GetSelectedImageCommand(element);
+                                    command.Execute(inline);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        #endregion // Event
+        #endregion // Events
     }
 }

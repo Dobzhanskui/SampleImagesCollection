@@ -29,6 +29,7 @@ namespace SampleMVVMWPF
         private RelayCommand m_pasteCommand;
         private RelayCommand m_deleteCommand;
         private RelayCommand m_keyboardFocusCommand;
+        private RelayCommand m_selectedTextEditImage;
 
         #endregion // Commands
 
@@ -63,24 +64,13 @@ namespace SampleMVVMWPF
                     Width = drawingGroup.Bounds.Width,
                     Source = new DrawingImage(drawingGroup)
                 };
-
+                
                 inlineUIContainer = new InlineUIContainer(drawingImage, m_textPointer);
-                //m_textPointer.Paragraph.Inlines.Add(inlineUIContainer);
-
-                drawingImage.Loaded += delegate
-                {
-                    AdornerLayer al = AdornerLayer.GetAdornerLayer(drawingImage);
-                    if (al != null)
-                    {
-                        al.Add(new ResizingAdorner(drawingImage));
-                    }
-                };
             }
 
             if (inlineUIContainer != null)
             {
                 ImageEditItems.Add(inlineUIContainer);
-                SelectedImage = inlineUIContainer;
             }
         }));
 
@@ -91,10 +81,10 @@ namespace SampleMVVMWPF
                 if (obj is InlineUIContainer inlineUIContainer)
                 {
                     ImageEditItems.Remove(inlineUIContainer);
-                    m_textPointer.Paragraph.Inlines.Remove(inlineUIContainer);
+                    m_textPointer.Paragraph?.Inlines?.Remove(inlineUIContainer);
                 }
             },
-                (obj) => obj != null && ImageEditItems.Count > 0));
+            (obj) => obj != null && ImageEditItems.Count > 0));
         }
 
         public RelayCommand PasteCommand
@@ -103,23 +93,30 @@ namespace SampleMVVMWPF
             {
                 if (obj is InlineUIContainer inlineUIContainer)
                 {
-                    if (m_textPointer.Paragraph.Inlines.Contains(inlineUIContainer))
+                    if (m_textPointer.Paragraph?.Inlines?.Contains(inlineUIContainer) == true)
                         return;
 
-                    if (ImageEditItems.Count == 0)
+                    if (m_textPointer.Paragraph?.Inlines?.Count == 0)
                     {
-                        m_textPointer.Paragraph.Inlines.Add(inlineUIContainer);                        
+                        m_textPointer.Paragraph?.Inlines.Add(inlineUIContainer);
                     }
                     else
                     {
-                        m_textPointer.Paragraph.Inlines.InsertAfter(m_textPointer.Paragraph.Inlines.LastInline, inlineUIContainer);
+                        try
+                        {
+                            m_textPointer.Paragraph?.Inlines?.InsertAfter(m_textPointer.Paragraph?.Inlines?.LastInline, inlineUIContainer);
+                        }
+                        catch (Exception)
+                        {
+                        }
+                        
                     }
-                    
+
                     ImageEditItems.Insert(ImageEditItems.Count == 0 ? 0 : ImageEditItems.Count - 1, inlineUIContainer);
-                    SelectedImage = inlineUIContainer;
+                    SelectedImage = null;
                 }
             },
-                (obj) => obj != null));
+            (obj) => obj != null));
         }
 
         public RelayCommand DeleteCommand
@@ -129,14 +126,23 @@ namespace SampleMVVMWPF
                 if (obj is InlineUIContainer inlineUIContainer)
                 {
                     ImageEditItems.Remove(inlineUIContainer);
-
-                    if (m_textPointer.Paragraph != null)
-                        m_textPointer.Paragraph.Inlines.Remove(inlineUIContainer);
-
-                    SelectedImage = ImageEditItems.Count == 0 ? null : ImageEditItems[ImageEditItems.Count - 1];
+                    m_textPointer.Paragraph?.Inlines?.Remove(inlineUIContainer);
+                    SelectedImage = null;
                 }
             },
-             (obj) => obj != null && ImageEditItems.Count > 0));
+            (obj) => obj != null && ImageEditItems.Count > 0));
+        }
+
+        public RelayCommand SelectedTextEditImage
+        {
+            get => m_selectedTextEditImage ?? (m_selectedTextEditImage = new RelayCommand(obj =>
+            {
+                if (obj is InlineUIContainer inlineUIContainer)
+                {
+                    SelectedImage = inlineUIContainer;
+                }
+            },
+            (obj) => obj != null && ImageEditItems.Count > 0));
         }
 
         public InlineUIContainer SelectedImage
@@ -181,7 +187,6 @@ namespace SampleMVVMWPF
             using (var drawingContext = visual.RenderOpen())
             {
                 var imageSource = new BitmapImage(new Uri(imagePath, UriKind.Relative));
-                //var positiontRect = m_textPointer.GetCharacterRect(LogicalDirection.Forward);
                 drawingContext.DrawImage(imageSource, new Rect(0, 0, image.Width > 200 ? 200 : image.Width, image.Height > 200 ? 200 : image.Height));
                 var formattedText = new FormattedText($"{ImageEditItems.Count + 1}",
                            CultureInfo.InvariantCulture,

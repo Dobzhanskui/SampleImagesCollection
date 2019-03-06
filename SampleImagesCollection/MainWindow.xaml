@@ -33,7 +33,7 @@
             HorizontalScrollBarVisibility="Auto"
             SpellCheck.IsEnabled="True"  
             local:KeyboardBehaviour.KeyboardFocusCommand="{Binding KeyboardFocusCommand}" 
-            local:KeyboardBehaviour.KeyDownCommand="{Binding DeleteCommand}"
+            local:KeyboardBehaviour.SelectedImageCommand="{Binding SelectedTextEditImage}"
             >
             <RichTextBox.ContextMenu>
                 <ContextMenu>
