@@ -64,8 +64,9 @@ namespace SampleMVVMWPF
                     Width = drawingGroup.Bounds.Width,
                     Source = new DrawingImage(drawingGroup)
                 };
-                
-                inlineUIContainer = new InlineUIContainer(drawingImage, m_textPointer);
+
+                var textRange = new TextRange(m_textPointer.DocumentStart, m_textPointer.DocumentEnd);
+                inlineUIContainer = new InlineUIContainer(drawingImage, textRange.End);
             }
 
             if (inlineUIContainer != null)
@@ -80,8 +81,8 @@ namespace SampleMVVMWPF
             {
                 if (obj is InlineUIContainer inlineUIContainer)
                 {
-                    ImageEditItems.Remove(inlineUIContainer);
                     m_textPointer.Paragraph?.Inlines?.Remove(inlineUIContainer);
+                    ImageEditItems.Remove(inlineUIContainer);
                 }
             },
             (obj) => obj != null && ImageEditItems.Count > 0));

@@ -63,9 +63,9 @@ namespace SampleMVVMWPF
         {
             if (sender is RichTextBox richTextBox)
             {
-                var textPointer = richTextBox.CaretPosition;
+                var position = richTextBox.CaretPosition;
                 var command = GetKeyboardFocusCommand(richTextBox);
-                command.Execute(textPointer);
+                command.Execute(position);
             }
         }
 
