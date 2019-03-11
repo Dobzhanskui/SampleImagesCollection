@@ -9,19 +9,23 @@ namespace SampleMVVMWPF
     {
         #region DependencyProperty
 
-        public static readonly DependencyProperty KeyboardFocusCommandProperty =
-           DependencyProperty.RegisterAttached("KeyboardFocusCommand", typeof(ICommand), typeof(KeyboardBehaviour),
-           new FrameworkPropertyMetadata(new PropertyChangedCallback(KeyboardFocusCommandChanged)));
+        public static readonly DependencyProperty PreviewKeyCommandProperty =
+           DependencyProperty.RegisterAttached("PreviewKeyCommand", typeof(ICommand), typeof(KeyboardBehaviour),
+           new FrameworkPropertyMetadata(new PropertyChangedCallback(PreviewKeyCommandChanged)));
 
-        public static readonly DependencyProperty SelectedImageCommandProperty =
-           DependencyProperty.RegisterAttached("SelectedImageCommand", typeof(ICommand), typeof(KeyboardBehaviour),
-           new FrameworkPropertyMetadata(new PropertyChangedCallback(SelectedImageCommandChanged)));
+        public static readonly DependencyProperty FocusCommandProperty =
+           DependencyProperty.RegisterAttached("FocusCommand", typeof(ICommand), typeof(KeyboardBehaviour),
+           new FrameworkPropertyMetadata(new PropertyChangedCallback(FocusCommandChanged)));
+
+        public static readonly DependencyProperty CountUIElementsCommandProperty =
+          DependencyProperty.RegisterAttached("CountUIElementsCommand", typeof(ICommand), typeof(KeyboardBehaviour),
+          new FrameworkPropertyMetadata(new PropertyChangedCallback(CountUIElementsCommandChanged)));
 
         #endregion // DependencyProperty
 
         #region Commands
 
-        public static void KeyboardFocusCommandChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        public static void FocusCommandChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
             if (dependencyObject is FrameworkElement element)
             {
@@ -31,30 +35,45 @@ namespace SampleMVVMWPF
             }
         }
 
-        public static void SelectedImageCommandChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        public static void PreviewKeyCommandChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
-            if (dependencyObject is FrameworkElement element && element is RichTextBox richTextBox)
+            if (dependencyObject is FrameworkElement element)
             {
-                richTextBox.SelectionChanged += element_SelectionChanged;
-                richTextBox.IsDocumentEnabled = true;
+                element.PreviewKeyDown += element_PreviewKeyDown;
+            }
+        }
+
+        public static void CountUIElementsCommandChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        {
+            if (dependencyObject is RichTextBox richTextBox)
+            {
+                richTextBox.TextChanged += richTextBox_TextChanged;
             }
         }       
 
-        public static void SetKeyboardFocusCommand(UIElement uiElement, ICommand value)
+        public static void SetFocusCommand(UIElement uiElement, ICommand value)
         {
-            uiElement.SetValue(KeyboardFocusCommandProperty, value);
+            uiElement.SetValue(FocusCommandProperty, value);
         }
 
-        public static void SetSelectedImageCommand(UIElement uiElement, ICommand value)
+        public static void SetPreviewKeyCommand(UIElement uiElement, ICommand value)
         {
-            uiElement.SetValue(SelectedImageCommandProperty, value);
+            uiElement.SetValue(PreviewKeyCommandProperty, value);
         }
 
-        public static ICommand GetKeyboardFocusCommand(UIElement element)
-            => (ICommand)element.GetValue(KeyboardFocusCommandProperty);
+        public static void SetCountUIElementsCommand(UIElement uiElement, ICommand value)
+        {
+            uiElement.SetValue(CountUIElementsCommandProperty, value);
+        }
 
-        public static ICommand GetSelectedImageCommand(UIElement element)
-         => (ICommand)element.GetValue(SelectedImageCommandProperty);
+        public static ICommand GetPreviewKeyCommand(UIElement element)
+            => (ICommand)element.GetValue(PreviewKeyCommandProperty);
+
+        public static ICommand GetFocusCommand(UIElement element)
+           => (ICommand)element.GetValue(FocusCommandProperty);
+
+        public static ICommand GetCountUIElementsCommand(UIElement element)
+           => (ICommand)element.GetValue(CountUIElementsCommandProperty);
 
         #endregion // Commands
 
@@ -65,14 +84,23 @@ namespace SampleMVVMWPF
             if (sender is RichTextBox richTextBox)
             {
                 var position = richTextBox.CaretPosition;
-                var command = GetKeyboardFocusCommand(richTextBox);
+                var command = GetFocusCommand(richTextBox);
                 command.Execute(position);
             }
         }
 
-        private static void element_SelectionChanged(object sender, RoutedEventArgs e)
+        private static void element_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Source is RichTextBox richTextBox)
+            if (Key.Delete == e.Key || Key.Back == e.Key)
+            {
+                e.Handled = false;
+            }
+        }
+
+        private static void richTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var countUIElements = 0;
+            if (sender is RichTextBox richTextBox)
             {
                 foreach (Block block in richTextBox.Document.Blocks)
                 {
@@ -82,16 +110,14 @@ namespace SampleMVVMWPF
                         {
                             if (inline is InlineUIContainer uiContainer)
                             {
-                                if (richTextBox.Selection.Contains(uiContainer.ContentStart))
-                                {
-                                    var command = GetSelectedImageCommand(richTextBox);
-                                    command.Execute(uiContainer);
-                                    break;
-                                }
+                                countUIElements++;
                             }
                         }
                     }
                 }
+
+                var command = GetCountUIElementsCommand(richTextBox);
+                command.Execute(countUIElements);
             }
         }
 

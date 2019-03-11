@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SampleMVVMWPF"
-        xmlns:richEdit="clr-namespace:SampleMVVMWPF"
         mc:Ignorable="d"
         Title="Sample Images List" Height="350" Width="525" Icon="Helpers/Images/planning.ico" Background="#FFF6F5F5">
     <Window.Resources>
@@ -27,12 +26,13 @@
             VerticalScrollBarVisibility="Auto"  
             HorizontalScrollBarVisibility="Auto"
             SpellCheck.IsEnabled="True"  
-            local:KeyboardBehaviour.KeyboardFocusCommand="{Binding KeyboardFocusCommand}" 
-            local:KeyboardBehaviour.SelectedImageCommand="{Binding SelectedTextEditImage}"
+            local:KeyboardBehaviour.FocusCommand="{Binding FocusCommand}" 
+            local:KeyboardBehaviour.PreviewKeyCommand="{Binding DeleteCommand}"
+            local:KeyboardBehaviour.CountUIElementsCommand="{Binding CountUIElements}"
             >
             <RichTextBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Command="{Binding CutCommand}" CommandParameter="{Binding SelectedImage}" Header="Cut">
+                    <MenuItem Command="ApplicationCommands.Cut" Header="Cut">
                         <MenuItem.Icon>
                             <Image>
                                 <Image.Source>
@@ -41,20 +41,11 @@
                             </Image>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Command="{Binding PasteCommand}" CommandParameter="{Binding SelectedImage}" Header="Paste">
+                    <MenuItem Command="ApplicationCommands.Paste" Header="Paste">
                         <MenuItem.Icon>
                             <Image>
                                 <Image.Source>
                                     <BitmapImage UriSource="Helpers/Images/paste.ico"/>
-                                </Image.Source>
-                            </Image>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedImage}" Header="Delete">
-                        <MenuItem.Icon>
-                            <Image>
-                                <Image.Source>
-                                    <BitmapImage UriSource="Helpers/Images/delete.ico"/>
                                 </Image.Source>
                             </Image>
                         </MenuItem.Icon>
