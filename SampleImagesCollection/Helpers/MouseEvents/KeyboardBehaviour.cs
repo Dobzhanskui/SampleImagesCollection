@@ -2,6 +2,9 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Documents;
+using System.Drawing;
+using System.Windows.Interactivity;
+using System.Linq;
 
 namespace SampleMVVMWPF
 {
@@ -25,7 +28,8 @@ namespace SampleMVVMWPF
         {
             if (dependencyObject is FrameworkElement element)
             {
-                element.GotKeyboardFocus += element_KeyboardFocus;
+                element.GotFocus += element_GotFocus;
+                element.LostFocus += element_GotFocus;
                 Keyboard.Focus(element);
             }
         }
@@ -34,10 +38,10 @@ namespace SampleMVVMWPF
         {
             if (dependencyObject is FrameworkElement element && element is RichTextBox richTextBox)
             {
-                element.PreviewMouseUp += element_PreviewMouseUp;
+                richTextBox.SelectionChanged += element_SelectionChanged;
                 richTextBox.IsDocumentEnabled = true;
             }
-        }
+        }       
 
         public static void SetKeyboardFocusCommand(UIElement uiElement, ICommand value)
         {
@@ -59,7 +63,7 @@ namespace SampleMVVMWPF
 
         #region Events
 
-        public static void element_KeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        private static void element_GotFocus(object sender, RoutedEventArgs e)
         {
             if (sender is RichTextBox richTextBox)
             {
@@ -69,9 +73,9 @@ namespace SampleMVVMWPF
             }
         }
 
-        private static void element_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        private static void element_SelectionChanged(object sender, RoutedEventArgs e)
         {
-            if (sender is FrameworkElement element && element is RichTextBox richTextBox)
+            if (e.Source is RichTextBox richTextBox)
             {
                 foreach (Block block in richTextBox.Document.Blocks)
                 {
@@ -79,12 +83,13 @@ namespace SampleMVVMWPF
                     {
                         foreach (Inline inline in paragraph.Inlines)
                         {
-                            if (inline is InlineUIContainer inlineUIContainer)
+                            if (inline is InlineUIContainer uiContainer)
                             {
-                                if (richTextBox.Selection.Contains(inlineUIContainer.ContentStart))
+                                if (richTextBox.Selection.Contains(uiContainer.ContentStart))
                                 {
-                                    var command = GetSelectedImageCommand(element);
-                                    command.Execute(inline);
+                                    var command = GetSelectedImageCommand(richTextBox);
+                                    command.Execute(uiContainer);
+                                    break;
                                 }
                             }
                         }

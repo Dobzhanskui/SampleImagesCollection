@@ -12,6 +12,7 @@ using System;
 using SampleMVVMWPF.Helpers;
 using System.Windows.Documents;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SampleMVVMWPF
 {
@@ -51,22 +52,22 @@ namespace SampleMVVMWPF
         public RelayCommand AddCommand => m_addOpenCommand ?? (m_addOpenCommand = new RelayCommand(obj =>
         {
             var inlineUIContainer = default(InlineUIContainer);
-            var openFileDialog = new OpenFileDialog
+            using (var openFileDialog = new OpenFileDialog
             {
                 Filter = "Image files|*.bmp;*.jpg;*.gif;*.png;*.tif|Bitmaps|*.bmp|PNG files|*.png|JPEG files|*.jpg|GIF files|*.gif|TIFF files|*.tif|All files|*.*"
-            };
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            })
             {
-                var drawingGroup = CreateNewImageWithIndex(openFileDialog.FileName);
-                var drawingImage = new Image
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    Height = drawingGroup.Bounds.Height,
-                    Width = drawingGroup.Bounds.Width,
-                    Source = new DrawingImage(drawingGroup)
-                };
-
-                var textRange = new TextRange(m_textPointer.DocumentStart, m_textPointer.DocumentEnd);
-                inlineUIContainer = new InlineUIContainer(drawingImage, textRange.End);
+                    var drawingGroup = CreateNewImageWithIndex(openFileDialog.FileName);
+                    var drawingImage = new Image
+                    {
+                        Height = drawingGroup.Bounds.Height,
+                        Width = drawingGroup.Bounds.Width,
+                        Source = new DrawingImage(drawingGroup)
+                    };
+                    inlineUIContainer = new InlineUIContainer(drawingImage, m_textPointer);
+                }
             }
 
             if (inlineUIContainer != null)
@@ -110,7 +111,7 @@ namespace SampleMVVMWPF
                         catch (Exception)
                         {
                         }
-                        
+
                     }
 
                     ImageEditItems.Insert(ImageEditItems.Count == 0 ? 0 : ImageEditItems.Count - 1, inlineUIContainer);
