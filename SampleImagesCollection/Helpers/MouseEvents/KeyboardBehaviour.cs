@@ -2,9 +2,6 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Documents;
-using System.Drawing;
-using System.Windows.Interactivity;
-using System.Linq;
 
 namespace SampleMVVMWPF
 {
