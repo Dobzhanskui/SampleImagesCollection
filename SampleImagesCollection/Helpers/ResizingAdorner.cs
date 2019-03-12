@@ -31,88 +31,88 @@ namespace SampleMVVMWPF.Helpers
             BuildAdornerCorner(ref bottomLeft, Cursors.SizeNESW);//RNTP
             BuildAdornerCorner(ref bottomRight, Cursors.SizeNESW);//RNTP
 
-            BuildAdornerCorner(ref MiddleLeft, Cursors.SizeWE);//RNTP
-            BuildAdornerCorner(ref MiddleRight, Cursors.SizeWE);//RNTP
-            BuildAdornerCorner(ref MiddleTop, Cursors.SizeNS);//RNTP
-            BuildAdornerCorner(ref MiddleBottom, Cursors.SizeNS);//RNTP
+            //BuildAdornerCorner(ref MiddleLeft, Cursors.SizeWE);//RNTP
+            //BuildAdornerCorner(ref MiddleRight, Cursors.SizeWE);//RNTP
+            //BuildAdornerCorner(ref MiddleTop, Cursors.SizeNS);//RNTP
+            //BuildAdornerCorner(ref MiddleBottom, Cursors.SizeNS);//RNTP
 
             topRight.DragDelta += new DragDeltaEventHandler(HandleTopRight);//RNTP
             topLeft.DragDelta += new DragDeltaEventHandler(HandleTopLeft);//RNTP
             bottomLeft.DragDelta += new DragDeltaEventHandler(HandleBottomLeft);//RNTP
             bottomRight.DragDelta += new DragDeltaEventHandler(HandleBottomRight);//RNTP
 
-            MiddleLeft.DragDelta += new DragDeltaEventHandler(HandleMiddleLeft);//RNTP
-            MiddleRight.DragDelta += new DragDeltaEventHandler(HandleMiddleRight);//RNTP
-            MiddleTop.DragDelta += new DragDeltaEventHandler(HandleMiddleTop);//RNTP
-            MiddleBottom.DragDelta += new DragDeltaEventHandler(HandleMiddleBottom);//RNTP
+            //MiddleLeft.DragDelta += new DragDeltaEventHandler(HandleMiddleLeft);//RNTP
+            //MiddleRight.DragDelta += new DragDeltaEventHandler(HandleMiddleRight);//RNTP
+            //MiddleTop.DragDelta += new DragDeltaEventHandler(HandleMiddleTop);//RNTP
+            //MiddleBottom.DragDelta += new DragDeltaEventHandler(HandleMiddleBottom);//RNTP
         }
 
         //RNTP starts
-        private void HandleMiddleLeft(object sender, DragDeltaEventArgs args)
-        {
-            var adornedElement = this.AdornedElement as FrameworkElement;
-            var hitThumb = sender as Thumb;
+        //private void HandleMiddleLeft(object sender, DragDeltaEventArgs args)
+        //{
+        //    var adornedElement = this.AdornedElement as FrameworkElement;
+        //    var hitThumb = sender as Thumb;
 
-            if (adornedElement == null || hitThumb == null) return;
-            FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
+        //    if (adornedElement == null || hitThumb == null) return;
+        //    FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
 
-            // Ensure that the Width and Height are properly initialized after the resize.
-            EnforceSize(adornedElement);
+        //    // Ensure that the Width and Height are properly initialized after the resize.
+        //    EnforceSize(adornedElement);
 
-            // Change the size by the amount the user drags the mouse, as long as it's larger 
-            // than the width or height of an adorner, respectively.
-            adornedElement.Width = Math.Max(adornedElement.Width - args.HorizontalChange, hitThumb.DesiredSize.Width);
-        }
+        //    // Change the size by the amount the user drags the mouse, as long as it's larger 
+        //    // than the width or height of an adorner, respectively.
+        //    adornedElement.Width = Math.Max(adornedElement.Width - args.HorizontalChange, hitThumb.DesiredSize.Width);
+        //}
 
-        private void HandleMiddleRight(object sender, DragDeltaEventArgs args)
-        {
-            var hitThumb = sender as Thumb;
+        //private void HandleMiddleRight(object sender, DragDeltaEventArgs args)
+        //{
+        //    var hitThumb = sender as Thumb;
 
-            if (!(this.AdornedElement is FrameworkElement adornedElement) || hitThumb == null)
-                return;
+        //    if (!(this.AdornedElement is FrameworkElement adornedElement) || hitThumb == null)
+        //        return;
 
-            FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
+        //    FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
 
-            // Ensure that the Width and Height are properly initialized after the resize.
-            EnforceSize(adornedElement);
+        //    // Ensure that the Width and Height are properly initialized after the resize.
+        //    EnforceSize(adornedElement);
 
-            // Change the size by the amount the user drags the mouse, as long as it's larger 
-            // than the width or height of an adorner, respectively.
-            adornedElement.Width = Math.Max(adornedElement.Width + args.HorizontalChange, hitThumb.DesiredSize.Width);
-            //adornedElement.Height = Math.Max(args.VerticalChange + adornedElement.Height, hitThumb.DesiredSize.Height);
-        }
-        private void HandleMiddleTop(object sender, DragDeltaEventArgs args)
-        {
-            Thumb hitThumb = sender as Thumb;
+        //    // Change the size by the amount the user drags the mouse, as long as it's larger 
+        //    // than the width or height of an adorner, respectively.
+        //    adornedElement.Width = Math.Max(adornedElement.Width + args.HorizontalChange, hitThumb.DesiredSize.Width);
+        //    //adornedElement.Height = Math.Max(args.VerticalChange + adornedElement.Height, hitThumb.DesiredSize.Height);
+        //}
+        //private void HandleMiddleTop(object sender, DragDeltaEventArgs args)
+        //{
+        //    Thumb hitThumb = sender as Thumb;
 
-            if (!(this.AdornedElement is FrameworkElement adornedElement) || hitThumb == null)
-                return;
+        //    if (!(this.AdornedElement is FrameworkElement adornedElement) || hitThumb == null)
+        //        return;
 
-            FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
+        //    FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
 
-            // Ensure that the Width and Height are properly initialized after the resize.
-            EnforceSize(adornedElement);
+        //    // Ensure that the Width and Height are properly initialized after the resize.
+        //    EnforceSize(adornedElement);
 
-            // Change the size by the amount the user drags the mouse, as long as it's larger 
-            // than the width or height of an adorner, respectively.
-            adornedElement.Height = Math.Max(adornedElement.Height - args.VerticalChange, hitThumb.DesiredSize.Height);
-        }
-        private void HandleMiddleBottom(object sender, DragDeltaEventArgs args)
-        {
-            Thumb hitThumb = sender as Thumb;
+        //    // Change the size by the amount the user drags the mouse, as long as it's larger 
+        //    // than the width or height of an adorner, respectively.
+        //    adornedElement.Height = Math.Max(adornedElement.Height - args.VerticalChange, hitThumb.DesiredSize.Height);
+        //}
+        //private void HandleMiddleBottom(object sender, DragDeltaEventArgs args)
+        //{
+        //    Thumb hitThumb = sender as Thumb;
 
-            if (!(this.AdornedElement is FrameworkElement adornedElement) || hitThumb == null)
-                return;
+        //    if (!(this.AdornedElement is FrameworkElement adornedElement) || hitThumb == null)
+        //        return;
 
-            FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
+        //    FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
 
-            // Ensure that the Width and Height are properly initialized after the resize.
-            EnforceSize(adornedElement);
+        //    // Ensure that the Width and Height are properly initialized after the resize.
+        //    EnforceSize(adornedElement);
 
-            // Change the size by the amount the user drags the mouse, as long as it's larger 
-            // than the width or height of an adorner, respectively.
-            adornedElement.Height = Math.Max(args.VerticalChange + adornedElement.Height, hitThumb.DesiredSize.Height);
-        }
+        //    // Change the size by the amount the user drags the mouse, as long as it's larger 
+        //    // than the width or height of an adorner, respectively.
+        //    adornedElement.Height = Math.Max(args.VerticalChange + adornedElement.Height, hitThumb.DesiredSize.Height);
+        //}
         //ends
 
 
@@ -193,32 +193,36 @@ namespace SampleMVVMWPF.Helpers
         // Arrange the Adorners.
         protected override Size ArrangeOverride(Size finalSize)
         {
-            // desiredWidth and desiredHeight are the width and height of the element that's being adorned.  
-            // These will be used to place the ResizingAdorner at the corners of the adorned element.  
-            double desiredWidth = AdornedElement.DesiredSize.Width;
-            double desiredHeight = AdornedElement.DesiredSize.Height;
-
-            if ((AdornedElement.DesiredSize.Height > 2000 || AdornedElement.DesiredSize.Width > 2000) && AdornedElement is Image image)
+            if (AdornedElement is FrameworkElement frameworkElement)
             {
-                image.Height = 200;
-                image.Width = 200;
+                // desiredWidth and desiredHeight are the width and height of the element that's being adorned.  
+                // These will be used to place the ResizingAdorner at the corners of the adorned element.  
+                double desiredWidth = frameworkElement.ActualWidth;
+                double desiredHeight = frameworkElement.ActualHeight;
+
+                // adornerWidth & adornerHeight are used for placement as well.
+                double adornerWidth = frameworkElement.Width;
+                double adornerHeight = frameworkElement.Height;
+
+                if ((adornerWidth > 2000 || adornerHeight > 2000) && frameworkElement is Image image)
+                {
+                    image.Height = 200;
+                    image.Width = 200;
+                }
+
+                topRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, -adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
+                topLeft.Arrange(new Rect(-adornerWidth / 2, -adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
+
+                bottomLeft.Arrange(new Rect(-adornerWidth / 2, desiredHeight - adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
+                bottomRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, desiredHeight - adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
+
+                //MiddleLeft.Arrange(new Rect(-adornerWidth / 2, ((-adornerHeight / 2) + (desiredHeight - adornerHeight / 2)) / 2, adornerWidth, adornerHeight));//RNTP
+                //MiddleRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, ((-adornerHeight / 2) + (desiredHeight - adornerHeight / 2)) / 2, adornerWidth, adornerHeight));//RNTP
+
+                //MiddleTop.Arrange(new Rect(((-adornerWidth / 2) + (desiredWidth - adornerWidth / 2)) / 2, -adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
+                //MiddleBottom.Arrange(new Rect(((-adornerWidth / 2) + (desiredWidth - adornerWidth / 2)) / 2, desiredHeight - adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
             }
 
-            // adornerWidth & adornerHeight are used for placement as well.
-            double adornerWidth = this.DesiredSize.Width;
-            double adornerHeight = this.DesiredSize.Height;
-
-            topRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, -adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
-            topLeft.Arrange(new Rect(-adornerWidth / 2, -adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
-
-            bottomLeft.Arrange(new Rect(-adornerWidth / 2, desiredHeight - adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
-            bottomRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, desiredHeight - adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
-
-            MiddleLeft.Arrange(new Rect(-adornerWidth / 2, ((-adornerHeight / 2) + (desiredHeight - adornerHeight / 2)) / 2, adornerWidth, adornerHeight));//RNTP
-            MiddleRight.Arrange(new Rect(desiredWidth - adornerWidth / 2, ((-adornerHeight / 2) + (desiredHeight - adornerHeight / 2)) / 2, adornerWidth, adornerHeight));//RNTP
-
-            MiddleTop.Arrange(new Rect(((-adornerWidth / 2) + (desiredWidth - adornerWidth / 2)) / 2, -adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
-            MiddleBottom.Arrange(new Rect(((-adornerWidth / 2) + (desiredWidth - adornerWidth / 2)) / 2, desiredHeight - adornerHeight / 2, adornerWidth, adornerHeight));//RNTP
             // Return the final size.
             return finalSize;
         }
