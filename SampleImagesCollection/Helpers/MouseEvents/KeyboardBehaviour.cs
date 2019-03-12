@@ -9,10 +9,6 @@ namespace SampleMVVMWPF
     {
         #region DependencyProperty
 
-        public static readonly DependencyProperty PreviewKeyCommandProperty =
-           DependencyProperty.RegisterAttached("PreviewKeyCommand", typeof(ICommand), typeof(KeyboardBehaviour),
-           new FrameworkPropertyMetadata(new PropertyChangedCallback(PreviewKeyCommandChanged)));
-
         public static readonly DependencyProperty FocusCommandProperty =
            DependencyProperty.RegisterAttached("FocusCommand", typeof(ICommand), typeof(KeyboardBehaviour),
            new FrameworkPropertyMetadata(new PropertyChangedCallback(FocusCommandChanged)));
@@ -35,14 +31,6 @@ namespace SampleMVVMWPF
             }
         }
 
-        public static void PreviewKeyCommandChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
-        {
-            if (dependencyObject is FrameworkElement element)
-            {
-                element.PreviewKeyDown += element_PreviewKeyDown;
-            }
-        }
-
         public static void CountUIElementsCommandChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
             if (dependencyObject is RichTextBox richTextBox)
@@ -56,18 +44,10 @@ namespace SampleMVVMWPF
             uiElement.SetValue(FocusCommandProperty, value);
         }
 
-        public static void SetPreviewKeyCommand(UIElement uiElement, ICommand value)
-        {
-            uiElement.SetValue(PreviewKeyCommandProperty, value);
-        }
-
         public static void SetCountUIElementsCommand(UIElement uiElement, ICommand value)
         {
             uiElement.SetValue(CountUIElementsCommandProperty, value);
         }
-
-        public static ICommand GetPreviewKeyCommand(UIElement element)
-            => (ICommand)element.GetValue(PreviewKeyCommandProperty);
 
         public static ICommand GetFocusCommand(UIElement element)
            => (ICommand)element.GetValue(FocusCommandProperty);
@@ -86,14 +66,6 @@ namespace SampleMVVMWPF
                 var position = richTextBox.CaretPosition;
                 var command = GetFocusCommand(richTextBox);
                 command.Execute(position);
-            }
-        }
-
-        private static void element_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (Key.Delete == e.Key || Key.Back == e.Key)
-            {
-                e.Handled = false;
             }
         }
 

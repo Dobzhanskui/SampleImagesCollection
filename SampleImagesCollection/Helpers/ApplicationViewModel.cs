@@ -10,6 +10,8 @@ using System.Globalization;
 using System;
 using System.Windows.Documents;
 using System.Windows.Controls;
+using System.Collections.Generic;
+using SampleMVVMWPF.Helpers;
 
 namespace SampleMVVMWPF
 {
@@ -34,6 +36,7 @@ namespace SampleMVVMWPF
 
         public ApplicationViewModel()
         {
+            
         }
 
         #endregion // Constructor
@@ -57,6 +60,16 @@ namespace SampleMVVMWPF
                         Width = drawingGroup.Bounds.Width,
                         Source = new DrawingImage(drawingGroup)
                     };
+
+                    drawingImage.Loaded += delegate
+                    {
+                        var al = AdornerLayer.GetAdornerLayer(drawingImage);
+                        if (al != null)
+                        {
+                            al.Add(new ResizingAdorner(drawingImage));
+                        }
+                    };
+
                     inlineUIContainer = new InlineUIContainer(drawingImage, m_textPointer);
                 }
             }

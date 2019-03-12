@@ -27,7 +27,6 @@
             HorizontalScrollBarVisibility="Auto"
             SpellCheck.IsEnabled="True"  
             local:KeyboardBehaviour.FocusCommand="{Binding FocusCommand}" 
-            local:KeyboardBehaviour.PreviewKeyCommand="{Binding DeleteCommand}"
             local:KeyboardBehaviour.CountUIElementsCommand="{Binding CountUIElements}"
             >
             <RichTextBox.ContextMenu>

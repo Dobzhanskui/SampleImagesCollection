@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -65,10 +66,11 @@ namespace SampleMVVMWPF.Helpers
 
         private void HandleMiddleRight(object sender, DragDeltaEventArgs args)
         {
-            var adornedElement = this.AdornedElement as FrameworkElement;
             var hitThumb = sender as Thumb;
 
-            if (adornedElement == null || hitThumb == null) return;
+            if (!(this.AdornedElement is FrameworkElement adornedElement) || hitThumb == null)
+                return;
+
             FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
 
             // Ensure that the Width and Height are properly initialized after the resize.
@@ -81,10 +83,11 @@ namespace SampleMVVMWPF.Helpers
         }
         private void HandleMiddleTop(object sender, DragDeltaEventArgs args)
         {
-            FrameworkElement adornedElement = this.AdornedElement as FrameworkElement;
             Thumb hitThumb = sender as Thumb;
 
-            if (adornedElement == null || hitThumb == null) return;
+            if (!(this.AdornedElement is FrameworkElement adornedElement) || hitThumb == null)
+                return;
+
             FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
 
             // Ensure that the Width and Height are properly initialized after the resize.
@@ -96,10 +99,11 @@ namespace SampleMVVMWPF.Helpers
         }
         private void HandleMiddleBottom(object sender, DragDeltaEventArgs args)
         {
-            FrameworkElement adornedElement = this.AdornedElement as FrameworkElement;
             Thumb hitThumb = sender as Thumb;
 
-            if (adornedElement == null || hitThumb == null) return;
+            if (!(this.AdornedElement is FrameworkElement adornedElement) || hitThumb == null)
+                return;
+
             FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
 
             // Ensure that the Width and Height are properly initialized after the resize.
@@ -115,10 +119,11 @@ namespace SampleMVVMWPF.Helpers
         // Handler for resizing from the bottom-right.
         private void HandleBottomRight(object sender, DragDeltaEventArgs args)
         {
-            FrameworkElement adornedElement = this.AdornedElement as FrameworkElement;
             Thumb hitThumb = sender as Thumb;
 
-            if (adornedElement == null || hitThumb == null) return;
+            if (!(this.AdornedElement is FrameworkElement adornedElement) || hitThumb == null)
+                return;
+
             FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
 
             // Ensure that the Width and Height are properly initialized after the resize.
@@ -133,10 +138,12 @@ namespace SampleMVVMWPF.Helpers
         // Handler for resizing from the bottom-left.
         private void HandleBottomLeft(object sender, DragDeltaEventArgs args)
         {
-            FrameworkElement adornedElement = AdornedElement as FrameworkElement;
             Thumb hitThumb = sender as Thumb;
 
-            if (adornedElement == null || hitThumb == null) return;
+            if (!(AdornedElement is FrameworkElement adornedElement) || hitThumb == null)
+                return;
+
+            FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
 
             // Ensure that the Width and Height are properly initialized after the resize.
             EnforceSize(adornedElement);
@@ -150,10 +157,11 @@ namespace SampleMVVMWPF.Helpers
         // Handler for resizing from the top-right.
         private void HandleTopRight(object sender, DragDeltaEventArgs args)
         {
-            FrameworkElement adornedElement = this.AdornedElement as FrameworkElement;
             Thumb hitThumb = sender as Thumb;
 
-            if (adornedElement == null || hitThumb == null) return;
+            if (!(this.AdornedElement is FrameworkElement adornedElement) || hitThumb == null)
+                return;
+
             FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
 
             // Ensure that the Width and Height are properly initialized after the resize.
@@ -168,10 +176,10 @@ namespace SampleMVVMWPF.Helpers
         // Handler for resizing from the top-left.
         private void HandleTopLeft(object sender, DragDeltaEventArgs args)
         {
-            FrameworkElement adornedElement = AdornedElement as FrameworkElement;
             Thumb hitThumb = sender as Thumb;
 
-            if (adornedElement == null || hitThumb == null) return;
+            if (!(AdornedElement is FrameworkElement adornedElement) || hitThumb == null)
+                return;
 
             // Ensure that the Width and Height are properly initialized after the resize.
             EnforceSize(adornedElement);
@@ -189,6 +197,12 @@ namespace SampleMVVMWPF.Helpers
             // These will be used to place the ResizingAdorner at the corners of the adorned element.  
             double desiredWidth = AdornedElement.DesiredSize.Width;
             double desiredHeight = AdornedElement.DesiredSize.Height;
+
+            if ((AdornedElement.DesiredSize.Height > 2000 || AdornedElement.DesiredSize.Width > 2000) && AdornedElement is Image image)
+            {
+                image.Height = 200;
+                image.Width = 200;
+            }
 
             // adornerWidth & adornerHeight are used for placement as well.
             double adornerWidth = this.DesiredSize.Width;
@@ -239,8 +253,7 @@ namespace SampleMVVMWPF.Helpers
             if (adornedElement.Height.Equals(double.NaN))
                 adornedElement.Height = adornedElement.DesiredSize.Height;
 
-            FrameworkElement parent = adornedElement.Parent as FrameworkElement;
-            if (parent != null)
+            if (adornedElement.Parent is FrameworkElement parent)
             {
                 adornedElement.MaxHeight = parent.ActualHeight;
                 adornedElement.MaxWidth = parent.ActualWidth;

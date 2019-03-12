@@ -67,8 +67,6 @@
     </Compile>
     <Compile Include="Helpers\ApplicationViewModel.cs" />
     <Compile Include="Helpers\Command\RelayCommand.cs" />
-    <Compile Include="Helpers\ImageEdit.cs" />
-    <Compile Include="Helpers\ImageEditViewModel.cs" />
     <Compile Include="Helpers\MouseEvents\KeyboardBehaviour.cs" />
     <Compile Include="Helpers\ResizingAdorner.cs" />
     <Compile Include="MainWindow.xaml.cs">
